@@ -1,4 +1,4 @@
-params for motor model
+params for cell model
 
 Inputs
 Idc	Pack DC current (from positive to negative terminal) (A)
@@ -35,3 +35,5 @@ V			terminal voltage (V)
 T			cell temperature (deg C)
 
 supporting 
+
+NOTE: need to figure out how to force simulink to reload model data from MAT file when it's done

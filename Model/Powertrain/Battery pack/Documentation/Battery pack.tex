@@ -3,6 +3,7 @@
 \usepackage{gensymb}
 \usepackage{amsmath}
 \usepackage{graphicx}
+\usepackage{verbatim}		% \comment{}
 
 % smaller page margins
 \usepackage[top=2in, bottom=1.5in, left=1.5in, right=2in]{geometry}
@@ -20,12 +21,12 @@
 \section{Block diagram}
 soon
 
-\section{Inputs and outputs}
+\section{Inputs, outputs, and parameters}
 	\subsection{Inputs}
 	\begin{tabular}{ l | l | l  }
 		Input					&	Symbol		&	Unit		\\	\hline
 		DC current			&	$I_{dc}$		&	A		\\
-		Ambient temperature	&	$T_{amb}$	&	\degree C \\ 
+		%Ambient temperature	&	$T_{amb}$	&	\degree C \\ 
 	\end{tabular}
 	
 	\subsection{Outputs}
@@ -35,7 +36,7 @@ soon
 		Terminal voltage			&	$V_{dc}$		&	V		\\
 		Internal temperature			&	$T_{pack}$	&	\degree C	\\
 	\end{tabular}
-	
+		
 \section{Background, rationale, modeling strategy}
 	\subsection{Electrical model}
 		Each battery cell is modeled as an equivalent circuit:
@@ -49,26 +50,40 @@ soon
 		\FloatBarrier
 		
 		where:
-		\todo{What in Sam Hill do these parameters depend on?}
 		\begin{center}
 		\begin{tabular}{l l}
-			$V_{oc}$		&	is the battery open-circuit voltage in volts	\\
-			$R_{sd}$		&	is the battery self-discharge resistance in ohms \\
-			$R_{ohm}	$	&	is the battery ohmic resistance in ohms \\
-			$R_{ct}$		& 	is the battery ?? resistance in ohms \\
-			$R_{df}$		&	is the battery ?? resistance in ohms \\
-			$C_{dl}$		&	is the battery ?? capacitance in farads \\
-			$C_{df}$		& 	is the battery ?? capacitance in farads
+			$V_{oc}(SOC)$	&	is the battery open-circuit voltage in volts	\\
+			$R_{0}$			&	is the battery ohmic resistance in ohms \\
+			$R_{1}$			& 	is the battery first-order resistance in ohms \\
+			$C_{1}$			& 	is the battery firs-order capacitance in farads
 		\end{tabular}
 		\end{center}
 		
-		The battery open-circuit voltage, $V_{oc}$, is a function of the remaining cell capacity Q, and is represented by a lookup table.
-		\todo{$V_{oc}$ probably has a temperature dependence as well}
+		The battery open-circuit voltage, $V_{oc}$, is a function of the battery state of charge ($\frac{Q}{Q_0}$), and is represented by a lookup table.
 		
+		A pack is modeled as $n$ series cells connected by $n-1$ resistive busbars, as shown in Figure \ref{fig:Battery_pack_series_model}.
 		
-		\todo{Need to expand this electrical model to the n-series-cell equivalent circuit (assume all cells are identical?)}
+		\begin{figure}[h!]
+				\centering
+				\includegraphics[width=3in]{Figures/Battery_pack_series_model}
+				\caption{Battery pack series equivalent circuit model (with $n$ = 3)}
+				\label{fig:Battery_pack_series_model}
+		\end{figure}
+		\FloatBarrier
+		
+		With the assumptions above, an equation can be written for the terminal voltage of each individual cell:
+		
+		\begin{equation}
+			V(t) = V_\text{oc}(\text{SOC}) - I_\text{dc} R_0 - I_{dc}\left( R_1 \parallel Z_{C1} \right).
+		\end{equation}
+		\todo{Finish this in differential equation form}
 		
 	\subsection{Thermal model}
+		The pack is currently modeled at a constant temperature.
+	
+		\begin{comment}
+		%This is not currently implemented
+		
 		The battery pack is modeled as a single thermal mass which has some thermal resistance to ambient temperature:
 		
 		\begin{figure}[h!]
@@ -92,19 +107,24 @@ soon
 		\end{equation}
 		
 		where $v$ is the vehicle's longitudinal velocity.
+		\end{comment}
 		
 		
 
 \section{Parameters}
-	\begin{tabular}{ l | l | l  }
-		Parameter				&	Symbol		&	Unit					\\	\hline
-		Pack thermal mass			&	$C_{th}$		&	$J \text{ \degree C}^{-1}$
+	\subsection{Parameters}
+	\begin{tabular}{ l | l | l | l }
+		Parameter						&	Symbol		& MATLAB symbol	&	Unit		\\	\hline
+		Initial stored charge					&	$Q_0$		& \texttt{Q\_0}		&	coulomb	\\
+		Number of series cells				&	$n$			& \texttt{n}		&			\\
+		Zero-order series resistance, per cell	&	$R_0$		& \texttt{R0}		&	ohm		\\
+		First-order resistance, per cell			&	$R_1$		& \texttt{R1}		& 	ohm		\\
+		First-order capacitance, per cell		&	$C_1$		& \texttt{C1}		&	farad	\\
+		Open-circuit voltage					&	ocv(SOC)		& -				&	volt		\\
+		Initial temperature					&	$T_0$		& \texttt{T\_0}		&	\degree C \\
+		
 	\end{tabular}
 	
 	\todo{There are more parameters.}
-
-
-
-\section{Assumptions}
 
 \end{document}
