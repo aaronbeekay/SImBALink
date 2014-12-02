@@ -15,7 +15,7 @@ load( truth );
 Idc = timeseries( Current, Time );
 V	= timeseries( Voltage, Time );
 
-load_system('Battery_pack');
+load_system(fullfile( '..', 'Battery_pack'));
 mws = get_param(bdroot, 'modelworkspace');
 
 mws.reload();		% reload workspace from source file
